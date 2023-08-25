@@ -8,5 +8,11 @@ fn main() {
         .exit_on_esc(true)
         .build()
         .unwrap_or_else(|e| { panic!("Failed to build PistonWindow: {}", e) });
-    while let Some(e) = window.next() {}
+
+    while let Some(e) = window.next() {
+        window.draw_2d(&e, |context, graphics, device| {
+            // update screen
+            clear([0.2, 0.2, 0.2, 1.0], graphics);
+        });
+    }
 }
