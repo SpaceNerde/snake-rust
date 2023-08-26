@@ -78,6 +78,8 @@ impl Snake {
 }
 
 fn input_handler(snake: &mut Snake, key: Key)  {
+
+    // compare input with moving direction
     let input = match key {
         Key::Up => Some(Direction::Up),
         Key::Down => Some(Direction::Down),
@@ -86,6 +88,7 @@ fn input_handler(snake: &mut Snake, key: Key)  {
         _ => return,
     };
 
+    // check if snake wants to move into it self
     if input.unwrap() == snake.moving_direction.opposite() {
         return;
     }
