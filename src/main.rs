@@ -76,14 +76,18 @@ impl Snake {
     }
 }
 
-fn input_handler(key: Key)  {
+fn input_handler(snake: &mut Snake, key: Key)  {
     let input = match key {
-        Key::W => Some(Direction::Up),
-        Key::S => Some(Direction::Down),
-        Key::A => Some(Direction::Left),
-        Key::D => Some(Direction::Right),
+        Key::Up => Some(Direction::Up),
+        Key::Down => Some(Direction::Down),
+        Key::Left => Some(Direction::Left),
+        Key::Right => Some(Direction::Right),
         _ => return,
     };
+
+    if input.unwrap() == snake.moving_direction.opposite() {
+        return;;
+    }
 }
 
 fn draw_rect(color: Color, x: i32, y: i32, context: Context, graphics: &mut G2d) {
@@ -105,16 +109,19 @@ fn main() {
         .build()
         .unwrap_or_else(|e| { panic!("Failed to build PistonWindow: {}", e) });
 
+    window.set_max_fps(4u64);
+
     let mut snake = Snake::spawn();
     snake.expand_snake(7, 8);
 
     while let Some(e) = window.next() {
+
         window.draw_2d(&e, |context, graphics, device| {
             // update screen
             clear([0.2, 0.2, 0.2, 1.0], graphics);
 
             if let Some(Button::Keyboard(keyboard)) = e.press_args() {
-                input_handler(keyboard);
+                input_handler(&mut snake,keyboard);
             }
 
             snake.draw_snake(context, graphics);
