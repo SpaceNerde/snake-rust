@@ -5,11 +5,23 @@ use piston_window::types::Color;
 
 mod constants;
 
+#[derive(Clone, Copy, PartialEq)]
 enum Direction {
     Up,
     Down,
     Left,
     Right
+}
+
+impl Direction {
+    pub fn opposite(&self) -> Direction {
+        match *self {
+            Direction::Up => Direction::Down,
+            Direction::Down => Direction::Up,
+            Direction::Left => Direction::Right,
+            Direction::Right => Direction::Left
+        }
+    }
 }
 
 struct Snake {
@@ -58,6 +70,9 @@ impl Snake {
             Direction::Left => (last_x - 1, last_y),
             Direction::Right => (last_x + 1, last_y),
         };
+
+        self.body.insert(0, new_pos);
+        self.body.remove(self.body.len() - 1);
     }
 }
 
@@ -81,8 +96,12 @@ fn draw_rect(color: Color, x: i32, y: i32, context: Context, graphics: &mut G2d)
 }
 
 fn main() {
-    let mut window: PistonWindow = WindowSettings::new("Rust Snake!", (constants::WINDOW_WIDTH, constants::WINDOW_HEIGHT))
-        .exit_on_esc(true)
+    let mut window_settings = WindowSettings::new("Rust Snake!", (constants::WINDOW_WIDTH, constants::WINDOW_HEIGHT))
+        .exit_on_esc(true);
+
+    window_settings.set_vsync(true);
+
+    let mut window: PistonWindow = window_settings
         .build()
         .unwrap_or_else(|e| { panic!("Failed to build PistonWindow: {}", e) });
 
@@ -94,7 +113,12 @@ fn main() {
             // update screen
             clear([0.2, 0.2, 0.2, 1.0], graphics);
 
+            if let Some(Button::Keyboard(keyboard)) = e.press_args() {
+                input_handler(keyboard);
+            }
+
             snake.draw_snake(context, graphics);
+            snake.move_towards();
         });
     }
 }
