@@ -3,6 +3,8 @@ use piston_window::*;
 use piston_window::Key::*;
 use piston_window::types::Color;
 
+use rand::*;
+
 mod constants;
 
 #[derive(Clone, Copy, PartialEq)]
@@ -22,6 +24,11 @@ impl Direction {
             Direction::Right => Direction::Left
         }
     }
+}
+
+struct Food {
+    max_amount: i32,
+    count: i32,
 }
 
 struct Snake {
@@ -95,6 +102,35 @@ impl Snake {
     }
 }
 
+impl Food {
+    pub fn food() -> Self {
+        Food {
+            max_amount: 5,
+            count: 0,
+        }
+    }
+
+    pub fn spawn_food(&mut self) -> (Vec<i32>, Vec<i32>){
+
+        let mut x: Vec<i32> = vec![];
+        let mut y: Vec<i32> = vec![];
+
+
+        if self.count < self.max_amount {
+            for _ in 0..self.max_amount {
+                self.count += 1;
+
+                x.push( rand::thread_rng().gen_range(0..16));
+                y.push( rand::thread_rng().gen_range(0..16));
+            }
+        }
+
+        (x, y)
+    }
+
+
+}
+
 fn input_handler(snake: &mut Snake, key: Key) {
 
     // compare input with moving direction
@@ -136,6 +172,8 @@ fn main() {
     window.set_max_fps(4u64);
 
     let mut snake = Snake::spawn();
+    let mut food = Food::food();
+
     snake.expand_snake(7, 8);
     snake.expand_snake(6, 8);
 
@@ -145,9 +183,23 @@ fn main() {
             input_handler(&mut snake, keyboard);
         }
 
-        window.draw_2d(&e, |context, graphics, device| {
+
+        window.draw_2d(&e, |context, graphics, _device| {
             // update screen
             clear([0.2, 0.2, 0.2, 1.0], graphics);
+            let (x, y) = food.spawn_food();
+            for item_x in &x {
+                for item_y in &y {
+
+                    draw_rect(
+                        color::RED,
+                        *item_x,
+                        *item_y,
+                        context,
+                        graphics,
+                    )
+                }
+            }
 
             snake.draw_snake(context, graphics);
             snake.const_movement();
