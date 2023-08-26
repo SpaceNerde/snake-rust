@@ -1,6 +1,5 @@
 extern crate piston_window;
 use piston_window::*;
-use piston_window::Button::Keyboard;
 use piston_window::Key::*;
 use piston_window::types::Color;
 
