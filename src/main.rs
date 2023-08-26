@@ -62,7 +62,12 @@ impl Snake {
         (head.0, head.1)
     }
 
-    pub fn move_towards(&mut self) {
+    pub fn move_towards(&mut self, input: Option<Direction>) {
+        match input{
+            Some(d) => self.moving_direction = d,
+            None => {}
+        }
+
         let (last_x, last_y) = self.head_position();
 
         let new_pos = match self.moving_direction {
@@ -92,6 +97,8 @@ fn input_handler(snake: &mut Snake, key: Key)  {
     if input.unwrap() == snake.moving_direction.opposite() {
         return;
     }
+
+    snake.move_towards(input);
 }
 
 fn draw_rect(color: Color, x: i32, y: i32, context: Context, graphics: &mut G2d) {
@@ -117,6 +124,7 @@ fn main() {
 
     let mut snake = Snake::spawn();
     snake.expand_snake(7, 8);
+    snake.expand_snake(6, 8);
 
     while let Some(e) = window.next() {
 
@@ -128,9 +136,7 @@ fn main() {
             // update screen
             clear([0.2, 0.2, 0.2, 1.0], graphics);
 
-
             snake.draw_snake(context, graphics);
-            snake.move_towards();
         });
     }
 }
