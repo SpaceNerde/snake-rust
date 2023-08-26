@@ -86,7 +86,7 @@ fn input_handler(snake: &mut Snake, key: Key)  {
     };
 
     if input.unwrap() == snake.moving_direction.opposite() {
-        return;;
+        return;
     }
 }
 
