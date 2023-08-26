@@ -176,7 +176,7 @@ fn main() {
 
     snake.expand_snake(7, 8);
     snake.expand_snake(6, 8);
-
+    let (x, y) = food.spawn_food();
     while let Some(e) = window.next() {
 
         if let Some(Button::Keyboard(keyboard)) = e.press_args() {
@@ -187,7 +187,7 @@ fn main() {
         window.draw_2d(&e, |context, graphics, _device| {
             // update screen
             clear([0.2, 0.2, 0.2, 1.0], graphics);
-            let (x, y) = food.spawn_food();
+
             for item_x in &x {
                 for item_y in &y {
 
