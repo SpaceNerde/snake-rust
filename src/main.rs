@@ -61,6 +61,20 @@ impl Snake {
         (head.0, head.1)
     }
 
+    pub fn const_movement(&mut self) {
+        let (last_x, last_y) = self.head_position();
+
+        let new_pos = match self.moving_direction {
+            Direction::Up => (last_x, last_y - 1),
+            Direction::Down => (last_x, last_y + 1),
+            Direction::Left => (last_x - 1, last_y),
+            Direction::Right => (last_x + 1, last_y),
+        };
+
+        self.body.insert(0, new_pos);
+        self.body.remove(self.body.len() - 1);
+    }
+
     pub fn move_towards(&mut self, input: Option<Direction>) {
         match input{
             Some(d) => self.moving_direction = d,
@@ -81,7 +95,7 @@ impl Snake {
     }
 }
 
-fn input_handler(snake: &mut Snake, key: Key)  {
+fn input_handler(snake: &mut Snake, key: Key) {
 
     // compare input with moving direction
     let input = match key {
@@ -136,6 +150,7 @@ fn main() {
             clear([0.2, 0.2, 0.2, 1.0], graphics);
 
             snake.draw_snake(context, graphics);
+            snake.const_movement();
         });
     }
 }
