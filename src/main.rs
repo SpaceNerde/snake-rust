@@ -1,5 +1,6 @@
 extern crate piston_window;
 use piston_window::*;
+use piston_window::Button::Keyboard;
 use piston_window::Key::*;
 use piston_window::types::Color;
 
@@ -116,13 +117,14 @@ fn main() {
 
     while let Some(e) = window.next() {
 
+        if let Some(Button::Keyboard(keyboard)) = e.press_args() {
+            input_handler(&mut snake, keyboard);
+        }
+
         window.draw_2d(&e, |context, graphics, device| {
             // update screen
             clear([0.2, 0.2, 0.2, 1.0], graphics);
 
-            if let Some(Button::Keyboard(keyboard)) = e.press_args() {
-                input_handler(&mut snake,keyboard);
-            }
 
             snake.draw_snake(context, graphics);
             snake.move_towards();
