@@ -1,10 +1,19 @@
 extern crate piston_window;
 use piston_window::*;
+use piston_window::Key::*;
 use piston_window::types::Color;
 
 mod constants;
 
+enum Direction {
+    Up,
+    Down,
+    Left,
+    Right
+}
+
 struct Snake {
+    moving_direction: Direction,
     body: Vec<(i32, i32)>,
 }
 
@@ -12,6 +21,7 @@ impl Snake {
     // creates a new snake
     pub fn spawn() -> Self{
         Snake {
+            moving_direction: Direction::Right,
             body: vec![(8, 8)],
         }
     }
@@ -33,6 +43,32 @@ impl Snake {
             );
         }
     }
+
+    pub fn head_position(&self) -> (i32, i32){
+        let head = self.body[0];
+        (head.0, head.1)
+    }
+
+    pub fn move_towards(&mut self) {
+        let (last_x, last_y) = self.head_position();
+
+        let new_pos = match self.moving_direction {
+            Direction::Up => (last_x, last_y - 1),
+            Direction::Down => (last_x, last_y + 1),
+            Direction::Left => (last_x - 1, last_y),
+            Direction::Right => (last_x + 1, last_y),
+        };
+    }
+}
+
+fn input_handler(key: Key)  {
+    let input = match key {
+        Key::W => Some(Direction::Up),
+        Key::S => Some(Direction::Down),
+        Key::A => Some(Direction::Left),
+        Key::D => Some(Direction::Right),
+        _ => return,
+    };
 }
 
 fn draw_rect(color: Color, x: i32, y: i32, context: Context, graphics: &mut G2d) {
