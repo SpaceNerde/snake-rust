@@ -85,10 +85,10 @@ fn input_handler(snake: &mut Snake, key: Key)  {
 
     // compare input with moving direction
     let input = match key {
-        Key::Up => Some(Direction::Up),
-        Key::Down => Some(Direction::Down),
-        Key::Left => Some(Direction::Left),
-        Key::Right => Some(Direction::Right),
+        Up => Some(Direction::Up),
+        Down => Some(Direction::Down),
+        Left => Some(Direction::Left),
+        Right => Some(Direction::Right),
         _ => return,
     };
 
